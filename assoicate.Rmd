@@ -15,3 +15,20 @@ library(arulesViz)
 library(grid)
 ```
 
+```{r}
+SalesOrder_D27_2019 <- read_csv("Dept27/SalesOrder_D27Hist_2019.csv")
+```
+
+
+
+```{r}
+so_D27_2019<-group_by(SalesOrder_D27_2019,ORDER_DATE,SHIP_TO_ZIP) %>%
+  summarise(
+    ITEM_NUM=paste(ITEM_NUM,collapse = ","),
+    order_itemnumber_qyt=sum(ORDER_QTY))
+```
+
+```{r}
+class(so_D27_2019$ITEM_NUM)
+```
+
