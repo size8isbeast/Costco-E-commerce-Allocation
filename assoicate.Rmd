@@ -16,19 +16,53 @@ library(grid)
 ```
 
 ```{r}
-SalesOrder_D27_2019 <- read_csv("Dept27/SalesOrder_D27Hist_2019.csv")
+SalesOrder_D27_2019 <- read_csv("C:/Users/onepi/Documents/NEU/data mining/dataset/Dept27/SalesOrder_D27Hist_2019.csv")
 ```
-
 
 
 ```{r}
 so_D27_2019<-group_by(SalesOrder_D27_2019,ORDER_DATE,SHIP_TO_ZIP) %>%
   summarise(
     ITEM_NUM=paste(ITEM_NUM,collapse = ","),
-    order_itemnumber_qyt=sum(ORDER_QTY))
+    order_itemnumber_qyt=sum(ORDER_QTY)) 
+
+tmp <- subset(so_D27_2019 , count.fields(textConnection(so_D27_2019$ITEM_NUM), sep = ",")>1)
+tmp2 <- subset(select(tmp,ITEM_NUM))
+
+
+trans_19 = as(tmp, "transactions")
+
+
+```
+
+
+```{r}
+dir.create(path = "tmp", showWarnings = FALSE)
+ 
+# Write our data.frame to a csv
+write_csv(tmp, "temptall_transactions.csv")
+
+temp27_2019 <- read.transactions("temptall_transactions.csv")
+
+test <- read_csv("temptall_transactions.csv")
+
+view(temp27_2019)
+```
+
+
+
+
+```{r}
+str(trans_19)
+trans_19_done <- inspect(trans_19)
 ```
 
 ```{r}
-class(so_D27_2019$ITEM_NUM)
+gr_rule <- apriori(trans_19)
+
+inspect(head(gr_rule,5) )
 ```
+
+
+
 
